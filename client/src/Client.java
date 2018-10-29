@@ -48,8 +48,8 @@ public class Client {
         StringBuilder response = new StringBuilder();
         while(respostaDoComando.hasNext()) {
             response.append(respostaDoComando.nextLine() + "\n");
-            response.append("---------------------------------------");
         }
+        response.append("---------------------------------------");
         connection.sendMessage(new Message("print", response.toString()));
     }
 
@@ -61,7 +61,7 @@ public class Client {
         int mouseY = MouseInfo.getPointerInfo().getLocation().y;
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(screenshot, "jpg", baos);
+        ImageIO.write(screenshot, "png", baos);
         baos.flush();
         byte[] imageBytes = baos.toByteArray();
         baos.close();
