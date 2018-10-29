@@ -35,8 +35,7 @@ public class ServerMessageHandler {
 
             ImageScreen image = new ImageScreen(bufferedImage);
 
-            ClassLoader classLoader = ServerMessageHandler.class.getClassLoader();
-            BufferedImage cursor = ImageIO.read(classLoader.getResourceAsStream("cursor.png"));
+            BufferedImage cursor = ImageIO.read(ResourcesUtils.getFile("cursor", "png"));
 
             Graphics2D graphics2D = image.getImage().createGraphics();
             graphics2D.drawImage(cursor, mouseX, mouseY, 16, 16, null);
