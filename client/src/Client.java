@@ -1,14 +1,10 @@
-import java.awt.AWTException;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Objects;
 import java.util.Scanner;
-import javax.imageio.ImageIO;
 
 public class Client {
     static Connection connection;
@@ -61,12 +57,15 @@ public class Client {
         Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         BufferedImage screenshot = new Robot().createScreenCapture(screenRect);
 
+        int mouseX = MouseInfo.getPointerInfo().getLocation().x;
+        int mouseY = MouseInfo.getPointerInfo().getLocation().y;
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(screenshot, "jpg", baos);
         baos.flush();
         byte[] imageBytes = baos.toByteArray();
         baos.close();
 
-        connection.sendMessage(new Message("screen", imageBytes));
+        connection.sendMessage(new Message("screen", imageBytes, mouseX, mouseY));
     }
 }

@@ -1,9 +1,10 @@
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.File;
 import java.io.InputStream;
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 
 public class ServerMessageHandler {
     static void handleIncomingMessage(Message message, ClientConnection c) {
@@ -25,17 +26,31 @@ public class ServerMessageHandler {
         JFrame window = new JFrame("An Image On Screen");
 
         try {
-
             byte[] imageBytes = (byte[]) message.getArguments().get(0);
+            int mouseX = (int) message.getArguments().get(1);
+            int mouseY = (int) message.getArguments().get(2);
+
+
             InputStream in = new ByteArrayInputStream(imageBytes);
             BufferedImage bufferedImage = ImageIO.read(in);
 
-            window.add(new ImageScreen(bufferedImage));
+            ImageScreen image = new ImageScreen(bufferedImage);
+
+            ClassLoader classLoader = ServerMessageHandler.class.getClassLoader();
+            File file = new File(classLoader.getResource("cursor.png").getFile());
+
+            System.out.println(file.getAbsolutePath());
+            Image cursor = ImageIO.read(file);
+            Graphics2D graphics2D = image.getImage().createGraphics();
+            graphics2D.drawImage(cursor, mouseX, mouseY, 16, 16, null);
+
+            window.add(image);
 
             window.setLocationRelativeTo(null);
             window.pack();
+            window.setSize(Toolkit.getDefaultToolkit().getScreenSize());
             window.setVisible(true);
-        } catch(IOException e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
