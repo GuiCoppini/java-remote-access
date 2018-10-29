@@ -3,7 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
 
 public class ServerMessageHandler {
@@ -37,11 +36,8 @@ public class ServerMessageHandler {
             ImageScreen image = new ImageScreen(bufferedImage);
 
             ClassLoader classLoader = ServerMessageHandler.class.getClassLoader();
-            File file = new File(classLoader.getResource("cursor.png").getFile());
+            BufferedImage cursor = ImageIO.read(classLoader.getResourceAsStream("cursor.png"));
 
-            System.out.println(file.getAbsolutePath());
-
-            Image cursor = ImageIO.read(file);
             Graphics2D graphics2D = image.getImage().createGraphics();
             graphics2D.drawImage(cursor, mouseX, mouseY, 16, 16, null);
 
