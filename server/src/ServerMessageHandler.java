@@ -40,6 +40,7 @@ public class ServerMessageHandler {
             File file = new File(classLoader.getResource("cursor.png").getFile());
 
             System.out.println(file.getAbsolutePath());
+
             Image cursor = ImageIO.read(file);
             Graphics2D graphics2D = image.getImage().createGraphics();
             graphics2D.drawImage(cursor, mouseX, mouseY, 16, 16, null);
