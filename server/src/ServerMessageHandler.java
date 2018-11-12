@@ -1,11 +1,15 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 public class ServerMessageHandler {
+
+    private static JFrame sharedScreen;
+
     static void handleIncomingMessage(Message message, ClientConnection c) {
 
         switch(message.getCommand()) {
@@ -15,15 +19,39 @@ public class ServerMessageHandler {
             case "print":
                 System.out.println(message.getArguments().get(0));
                 break;
-
+            case "screenshare":
+                receiveScreenShare(message, c);
+                break;
         }
 
     }
 
+    static void receiveScreenShare(Message message, ClientConnection c) {
+        if(sharedScreen == null) {
+            sharedScreen = new JFrame("ScreenShare");
+            sharedScreen.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.out.println("Fechou o jovem");
+                    e.getWindow().dispose();
+                    c.getConnection().sendMessage(new Message("stop-screenshare"));
+                    sharedScreen = null;
+                    System.out.println("JFrame Closed!");
+                }
+            });
+        }
+
+        putImageFromMessage(sharedScreen, message);
+    }
+
     static void receiveScreenshot(Message message) {
         System.out.println("SCREENZAO CHEGOU HEIN");
-        JFrame window = new JFrame("An Image On Screen");
+        JFrame window = new JFrame("ScreenShot");
 
+        putImageFromMessage(window, message);
+    }
+
+    private static void putImageFromMessage(JFrame window, Message message) {
         try {
             byte[] imageBytes = (byte[]) message.getArguments().get(0);
             int mouseX = (int) message.getArguments().get(1);
@@ -41,13 +69,18 @@ public class ServerMessageHandler {
             graphics2D.drawImage(cursor, mouseX, mouseY, 16, 16, null);
 
             window.add(image);
-
-            window.setLocationRelativeTo(null);
-            window.pack();
-            window.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+            window.update(image.getGraphics());
             window.setVisible(true);
         } catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static JFrame getSharedScreen() {
+        return sharedScreen;
+    }
+
+    public static void setSharedScreen(JFrame sharedScreen) {
+        ServerMessageHandler.sharedScreen = sharedScreen;
     }
 }

