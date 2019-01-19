@@ -1,3 +1,5 @@
+package main;
+
 import java.util.Locale;
 
 public final class OsCheck {

@@ -1,3 +1,5 @@
+package main;
+
 public class ScreenSharer implements Runnable {
 
     private Connection connection;
@@ -8,7 +10,7 @@ public class ScreenSharer implements Runnable {
 
     @Override
     public void run() {
-        while(ScreenUtils.isSharing) {
+        while (ScreenUtils.isSharing) {
             try {
                 ScreenUtils.sendScreenshot(connection, true);
                 Thread.sleep(250);

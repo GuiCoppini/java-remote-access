@@ -1,3 +1,5 @@
+package main;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -9,7 +11,7 @@ public class Server {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         try {
-            serverSocket = new ServerSocket(27015);
+            serverSocket = new ServerSocket(12345);
             System.out.println("Podipa vamo esperar o gatao entrar");
             Socket clientSocket = serverSocket.accept();
 
@@ -22,21 +24,20 @@ public class Server {
             String command;
             do {
                 command = sc.nextLine();
-                if(!isNullOrEmpty(command)) {
+                if (!isNullOrEmpty(command)) {
                     targetConnection.sendMessage(new Message(command));
                 }
 
-            } while(command != "quit");
+            } while (command != "quit");
 
 
-
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private static void runHandlerThread(Connection targetConnection) {
-        new Thread(new ClientConnection(targetConnection)).start();
+        ServerUtils.startOnNewThread(new ClientConnection(targetConnection));
     }
 
     private static boolean isNullOrEmpty(String command) {

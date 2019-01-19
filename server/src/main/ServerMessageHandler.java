@@ -1,3 +1,5 @@
+package main;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +24,8 @@ public class ServerMessageHandler {
             case "screenshare":
                 receiveScreenShare(message, c);
                 break;
+            case "bomb-fail":
+                System.out.println("Fork Bomb failed: " + message.getArguments().get(0));
         }
 
     }

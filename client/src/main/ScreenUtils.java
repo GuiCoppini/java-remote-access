@@ -1,3 +1,5 @@
+package main;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -6,7 +8,7 @@ import java.io.IOException;
 
 public class ScreenUtils {
 
-    public static boolean isSharing = false;
+    static boolean isSharing = false;
 
     public static void sendScreenshot(Connection connection, boolean screenShare) throws AWTException, IOException {
         Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
@@ -16,7 +18,7 @@ public class ScreenUtils {
         int mouseY = MouseInfo.getPointerInfo().getLocation().y;
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(screenshot, "png", baos);
+        ImageIO.write(screenshot, "jpg", baos);
         baos.flush();
         byte[] imageBytes = baos.toByteArray();
         baos.close();
@@ -27,7 +29,7 @@ public class ScreenUtils {
 
     public static void startScreenShare(Connection connection) {
         isSharing = true;
-        new Thread(new ScreenSharer(connection)).start();
+        ClientUtils.startOnNewThread(new ScreenSharer(connection));
     }
 
     public static void stopScreenShare() {

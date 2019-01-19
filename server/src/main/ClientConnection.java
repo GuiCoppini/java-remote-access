@@ -1,4 +1,4 @@
-import java.net.Socket;
+package main;
 
 public class ClientConnection implements Runnable {
 
