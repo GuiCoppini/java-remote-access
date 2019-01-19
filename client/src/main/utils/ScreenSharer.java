@@ -1,4 +1,7 @@
-package main;
+package main.utils;
+
+import main.network.Connection;
+import main.network.Message;
 
 public class ScreenSharer implements Runnable {
 

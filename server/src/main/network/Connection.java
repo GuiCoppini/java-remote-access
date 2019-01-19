@@ -1,4 +1,4 @@
-package main;
+package main.network;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,6 +30,7 @@ public class Connection {
                 }
         } catch (Exception e) {
             System.out.println("Nosso bb ta off :(");
+            e.printStackTrace();
             System.exit(0);
             return null;
         }

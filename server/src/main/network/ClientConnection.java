@@ -1,10 +1,12 @@
-package main;
+package main.network;
+
+import main.utils.ServerMessageHandler;
 
 public class ClientConnection implements Runnable {
 
     private Connection connection;
 
-    protected ClientConnection(Connection connection) {
+    public ClientConnection(Connection connection) {
         this.connection = connection;
     }
 

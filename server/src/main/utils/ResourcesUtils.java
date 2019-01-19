@@ -1,6 +1,10 @@
-package main;
+package main.utils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class ResourcesUtils {
     public static File getFile(String fileName, String suffix) throws IOException {

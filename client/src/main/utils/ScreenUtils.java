@@ -1,7 +1,14 @@
-package main;
+package main.utils;
+
+import main.network.Connection;
+import main.network.Message;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.MouseInfo;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

