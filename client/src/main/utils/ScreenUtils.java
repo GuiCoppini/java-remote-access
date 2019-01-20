@@ -17,18 +17,28 @@ public class ScreenUtils {
 
     static boolean isSharing = false;
 
-    public static void sendScreenshot(Connection connection, boolean screenShare) throws AWTException, IOException {
+    public static void sendScreenshot(Connection connection, boolean screenShare) {
         Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-        BufferedImage screenshot = new Robot().createScreenCapture(screenRect);
+        BufferedImage screenshot = null;
+        try {
+            screenshot = new Robot().createScreenCapture(screenRect);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
 
         int mouseX = MouseInfo.getPointerInfo().getLocation().x;
         int mouseY = MouseInfo.getPointerInfo().getLocation().y;
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(screenshot, "jpg", baos);
-        baos.flush();
-        byte[] imageBytes = baos.toByteArray();
-        baos.close();
+        byte[] imageBytes = null;
+        try {
+            ImageIO.write(screenshot, "jpg", baos);
+            baos.flush();
+            imageBytes = baos.toByteArray();
+            baos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         String command = screenShare ? "screenshare" : "screen";
         connection.sendMessage(new Message(command, imageBytes, mouseX, mouseY));

