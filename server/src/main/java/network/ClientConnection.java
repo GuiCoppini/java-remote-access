@@ -1,6 +1,6 @@
-package main.network;
+package main.java.network;
 
-import main.utils.ServerMessageHandler;
+import main.java.utils.ServerMessageHandler;
 
 public class ClientConnection implements Runnable {
 

