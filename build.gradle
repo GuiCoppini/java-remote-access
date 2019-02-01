@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+
+
+task serverJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'main.Server'
+    }
+
+    from(sourceSets.main.output) {
+        include "java-remote-access/server/**"
+    }
+
+    baseName = 'server'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
