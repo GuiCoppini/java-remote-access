@@ -20,11 +20,21 @@ public class Server {
     private final static List<ClientConnection> targets = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
         serverSocket = new ServerSocket(27015);
         System.out.println("Podipa vamo esperar o gatao entrar");
-        Socket clientSocket = serverSocket.accept();
 
+        clientConnection();
+    }
+
+    public static void clientConnection() {
+        Scanner sc = new Scanner(System.in);
+        Socket clientSocket = null;
+        try {
+            clientSocket = serverSocket.accept();
+        } catch (IOException e) {
+            System.out.println("Deu pau no accept fi");
+            e.printStackTrace();
+        }
         System.out.println("Opa temos uma presa kkkkk de ip " + clientSocket.getInetAddress());
 
         Connection targetConnection = new Connection(clientSocket);
@@ -35,17 +45,34 @@ public class Server {
         do {
             command = sc.nextLine();
             if (!isNullOrEmpty(command)) {
-                switch(command) {
+                switch (command) {
                     case "quit":
                         break;
                     case "help":
                         printCommandList();
                         break;
+                    case "targets":
+                        printTargets();
+                        break;
                     default:
-                        targetConnection.sendMessage(new Message(command));
+                        if (targets.isEmpty())
+                            System.out.println("Chefe, a lista ta vazia");
+                        else
+                            targets.get(0).getConnection().sendMessage(new Message(command));
                 }
             }
         } while (command != "quit");
+    }
+
+    public static void removeFromTargets(ClientConnection c) {
+        System.out.println("Opa vai kickar o " + c.getConnection().getSocket().getInetAddress());
+        targets.remove(c);
+    }
+
+    private static void printTargets() {
+        for(ClientConnection c : targets) {
+            System.out.println(c.getConnection().getSocket().getInetAddress() + ":" + c.getConnection().getSocket().getPort());
+        }
     }
 
     private static void runHandlerThread(Connection targetConnection) {

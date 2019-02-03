@@ -1,10 +1,11 @@
 package network;
 
+import exception.ClientOfflineException;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 
 public class Connection {
     public ObjectOutputStream out;
@@ -21,7 +22,7 @@ public class Connection {
         }
     }
 
-    public Message readMessage() throws SocketException {
+    public Message readMessage() throws ClientOfflineException {
         Message input;
         try {
             while (true)
@@ -29,10 +30,7 @@ public class Connection {
                     return input;
                 }
         } catch (Exception e) {
-            System.out.println("Nosso bb ta off :(");
-            e.printStackTrace();
-            System.exit(0);
-            return null;
+            throw new ClientOfflineException();
         }
     }
 
@@ -43,5 +41,9 @@ public class Connection {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 }

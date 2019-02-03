@@ -1,5 +1,7 @@
 package network;
 
+import app.Server;
+import exception.ClientOfflineException;
 import utils.ServerMessageHandler;
 
 public class ClientConnection implements Runnable {
@@ -13,11 +15,14 @@ public class ClientConnection implements Runnable {
     @Override
     public void run() {
         try {
-            while(true) {
+            while (true) {
                 ServerMessageHandler.handleIncomingMessage(connection.readMessage(), this);
             }
-        } catch(Exception e) {
-            e.printStackTrace();
+        } catch (ClientOfflineException e) {
+            System.out.println("Caiu aqui nego, ip=" + connection.socket.getInetAddress());
+            System.out.println("Exception: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+            Server.removeFromTargets(this);
+            Server.clientConnection();
         }
     }
 
