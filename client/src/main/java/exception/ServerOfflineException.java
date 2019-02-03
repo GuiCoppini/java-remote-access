@@ -1,4 +1,4 @@
-package main.java.exception;
+package exception;
 
 public class ServerOfflineException extends Exception {
     public ServerOfflineException(String message) {

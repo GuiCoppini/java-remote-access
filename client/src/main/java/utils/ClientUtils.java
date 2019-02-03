@@ -1,7 +1,7 @@
-package main.java.utils;
+package utils;
 
-import main.java.network.Connection;
-import main.java.network.Message;
+import network.Connection;
+import network.Message;
 
 import java.io.IOException;
 import java.util.Scanner;

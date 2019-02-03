@@ -1,4 +1,4 @@
-package main.java.network;
+package network;
 
 import java.awt.image.BufferedImage;
 import java.io.Serializable;

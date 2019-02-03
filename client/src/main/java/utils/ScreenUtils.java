@@ -1,7 +1,7 @@
-package main.java.utils;
+package utils;
 
-import main.java.network.Connection;
-import main.java.network.Message;
+import network.Connection;
+import network.Message;
 
 import javax.imageio.ImageIO;
 import java.awt.AWTException;

@@ -1,7 +1,7 @@
-package main.java.network;
+package network;
 
-import main.java.Client;
-import main.java.exception.ServerOfflineException;
+import app.Client;
+import exception.ServerOfflineException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

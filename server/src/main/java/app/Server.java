@@ -1,8 +1,8 @@
-package main.java;
+package app;
 
-import main.java.network.ClientConnection;
-import main.java.network.Connection;
-import main.java.network.Message;
+import network.ClientConnection;
+import network.Connection;
+import network.Message;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static main.java.utils.ServerUtils.printCommandList;
-import static main.java.utils.ServerUtils.startOnNewThread;
+import static utils.ServerUtils.printCommandList;
+import static utils.ServerUtils.startOnNewThread;
 
 public class Server {
 

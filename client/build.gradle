@@ -1,4 +1,4 @@
-mainClassName = 'main.java.Client'
+mainClassName = 'app.Client'
 
 jar {
     manifest {

@@ -1,7 +1,7 @@
-package main.java.utils;
+package utils;
 
-import main.java.network.ClientConnection;
-import main.java.network.Message;
+import network.ClientConnection;
+import network.Message;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import static main.java.utils.ServerUtils.print;
+import static utils.ServerUtils.print;
 
 
 public class ServerMessageHandler {

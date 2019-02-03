@@ -1,15 +1,15 @@
-package main.java;
+package app;
+
+import exception.ServerOfflineException;
+import network.Connection;
+import network.Message;
+import utils.Bomb;
+import utils.ClientUtils;
+import utils.OsCheck;
+import utils.ScreenUtils;
 
 import java.io.IOException;
 import java.net.Socket;
-
-import main.java.exception.ServerOfflineException;
-import main.java.network.Connection;
-import main.java.network.Message;
-import main.java.utils.Bomb;
-import main.java.utils.ClientUtils;
-import main.java.utils.OsCheck;
-import main.java.utils.ScreenUtils;
 
 public class Client {
     static Connection connection;
