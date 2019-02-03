@@ -13,6 +13,6 @@ public class Bomb {
     }
 
     public static void explode() throws IOException {
-        Runtime.getRuntime().exec(new String[]{"javaw", "-cp", System.getProperty("java.class.path"), "main.utils.Bomb"});
+       Bomb.main(null);
     }
 }
