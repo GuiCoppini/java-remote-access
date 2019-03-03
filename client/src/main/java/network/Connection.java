@@ -3,6 +3,7 @@ package network;
 import app.Client;
 import exception.ServerOfflineException;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -31,7 +32,7 @@ public class Connection {
                 if ((input = (Message) in.readObject()) != null) {
                     return input;
                 }
-        } catch (SocketException e) {
+        } catch (SocketException | EOFException e) {
             Client.disconnected();
             throw new ServerOfflineException("Server went offline");
         } catch (IOException | ClassNotFoundException ex) {
