@@ -19,6 +19,6 @@ public class ServerUtils {
 
     public static void print(Object printable) {
         System.out.println(printable.toString());
-        System.out.println("-------------------------------------------------");
+        System.out.println(ConsoleColors.GREEN + "-------------------------------------------------" + ConsoleColors.RESET);
     }
 }
