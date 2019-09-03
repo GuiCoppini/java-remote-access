@@ -1,9 +1,8 @@
 package utils;
 
-import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public enum Command {
     SCREENSHOT("screen", "Sends a screenshot"),
@@ -19,12 +18,11 @@ public enum Command {
         this.description = description;
     }
 
-    public static List<Pair<String, String>> availableCommands() {
-        List<Pair<String, String>> commandsAndDescriptions = new ArrayList<>();
+    public static Map<String, String> availableCommands() {
+        Map<String, String> commandsAndDescriptions = new HashMap<>();
         for (Command c : Command.values()) {
-            commandsAndDescriptions.add(new Pair<>(c.command, c.description));
+            commandsAndDescriptions.put(c.command, c.description);
         }
         return commandsAndDescriptions;
     }
-
 }

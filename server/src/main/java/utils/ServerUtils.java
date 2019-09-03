@@ -1,6 +1,6 @@
 package utils;
 
-import javafx.util.Pair;
+import java.util.Map;
 
 public class ServerUtils {
 
@@ -10,8 +10,8 @@ public class ServerUtils {
 
     public static void printCommandList() {
         StringBuilder commandList = new StringBuilder();
-        for (Pair<String, String> c : Command.availableCommands()) {
-            commandList.append("$ " + c.getKey() + " - " + c.getValue() + "\n");
+        for (Map.Entry<String, String> entry : Command.availableCommands().entrySet()) {
+            commandList.append("$ " + entry.getKey() + " - " + entry.getValue() + "\n");
         }
 
         print(commandList.toString());
