@@ -2,3 +2,33 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'application'
 }
+
+project("server") {
+    mainClassName = 'app.Server'
+
+    dependencies {
+        compile project(':client')
+    }
+
+    jar {
+        manifest {
+            attributes(
+                    'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                    'Main-Class': mainClassName
+            )
+        }
+    }
+}
+
+project("client") {
+    mainClassName = 'app.Client'
+
+    jar {
+        manifest {
+            attributes(
+                    'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                    'Main-Class': mainClassName
+            )
+        }
+    }
+}
