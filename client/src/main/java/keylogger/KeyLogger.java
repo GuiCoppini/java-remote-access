@@ -28,7 +28,7 @@ public class KeyLogger implements NativeKeyListener {
     public void start() {
         if(!isRunning) {
             try {
-                GlobalScreen.addNativeKeyListener(new KeyLogger(server));
+                GlobalScreen.addNativeKeyListener(instance);
                 GlobalScreen.registerNativeHook();
             } catch(NativeHookException e) {
                 // Silence is golden
@@ -41,6 +41,7 @@ public class KeyLogger implements NativeKeyListener {
     public void stop() {
         if(isRunning) {
             try {
+                GlobalScreen.removeNativeKeyListener(instance);
                 GlobalScreen.unregisterNativeHook();
                 isRunning = false;
             } catch(NativeHookException e) {

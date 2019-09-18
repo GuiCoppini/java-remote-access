@@ -1,18 +1,18 @@
 package app;
 
-import static utils.ServerUtils.printCommandList;
-import static utils.ServerUtils.startOnNewThread;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
 import network.ClientConnection;
 import network.Connection;
 import network.Message;
 import utils.ConsoleColors;
+import static utils.ServerUtils.printCommandList;
+import static utils.ServerUtils.startOnNewThread;
 
 public class Server {
 
@@ -81,6 +81,9 @@ public class Server {
     public static void removeFromTargets(ClientConnection c) {
         System.out.println("Opa vai kickar o " + formatIPandPORT(c));
         targets.remove(c);
+
+        // might or not be null
+        actualTarget = targets.get(0);
     }
 
     private static void printTargets() {
