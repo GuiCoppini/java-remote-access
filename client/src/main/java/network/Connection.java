@@ -1,14 +1,9 @@
 package network;
 
-import app.Client;
-import exception.ServerOfflineException;
-
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 
 public class Connection {
     public ObjectOutputStream out;
@@ -20,24 +15,25 @@ public class Connection {
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
     public Message readMessage() throws IOException, ClassNotFoundException {
         Message input;
-            while (true)
-                if ((input = (Message) in.readObject()) != null) {
-                    return input;
-                }
+        while(true) {
+            if((input = (Message) in.readObject()) != null) {
+                return input;
+            }
+        }
     }
 
     public void sendMessage(Message message) {
         try {
             out.writeObject(message);
             out.flush();
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }
