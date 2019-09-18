@@ -25,20 +25,12 @@ public class Connection {
         }
     }
 
-    public Message readMessage() throws ServerOfflineException {
+    public Message readMessage() throws IOException, ClassNotFoundException {
         Message input;
-        try {
             while (true)
                 if ((input = (Message) in.readObject()) != null) {
                     return input;
                 }
-        } catch (SocketException | EOFException e) {
-            Client.disconnected();
-            throw new ServerOfflineException("Server went offline");
-        } catch (IOException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-            return null;
-        }
     }
 
     public void sendMessage(Message message) {

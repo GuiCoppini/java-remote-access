@@ -18,7 +18,7 @@ public class ClientConnection implements Runnable {
             while (true) {
                 ServerMessageHandler.handleIncomingMessage(connection.readMessage(), this);
             }
-        } catch (ClientOfflineException e) {
+        } catch (Exception e) {
             System.out.println("Caiu aqui nego, ip=" + connection.socket.getInetAddress());
             System.out.println("Exception: " + e.getClass().getSimpleName() + " - " + e.getMessage());
             Server.removeFromTargets(this);
