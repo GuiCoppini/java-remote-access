@@ -1,10 +1,10 @@
 package utils;
 
-import network.Connection;
-import network.Message;
-
 import java.io.IOException;
 import java.util.Scanner;
+
+import network.Connection;
+import network.Message;
 
 public class ClientUtils {
     public static void startOnNewThread(Runnable r) {
@@ -30,7 +30,7 @@ public class ClientUtils {
 
             connection.sendMessage(new Message("print", response.toString()));
         } catch (IOException e) {
-            e.printStackTrace();
+            connection.sendMessage(new Message("print", "Command "+ command + " did not work."));
         }
     }
 }

@@ -1,9 +1,5 @@
 package utils;
 
-import network.Connection;
-import network.Message;
-
-import javax.imageio.ImageIO;
 import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Rectangle;
@@ -12,6 +8,10 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import javax.imageio.ImageIO;
+
+import network.Connection;
+import network.Message;
 
 public class ScreenUtils {
 
@@ -22,7 +22,7 @@ public class ScreenUtils {
         BufferedImage screenshot = null;
         try {
             screenshot = new Robot().createScreenCapture(screenRect);
-        } catch (AWTException e) {
+        } catch(AWTException e) {
             e.printStackTrace();
         }
 
@@ -36,7 +36,7 @@ public class ScreenUtils {
             baos.flush();
             imageBytes = baos.toByteArray();
             baos.close();
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
 
@@ -45,8 +45,10 @@ public class ScreenUtils {
     }
 
     public static void startScreenShare(Connection connection) {
-        isSharing = true;
-        ClientUtils.startOnNewThread(new ScreenSharer(connection));
+        if(!isSharing) {
+            ClientUtils.startOnNewThread(new ScreenSharer(connection));
+            isSharing = true;
+        }
     }
 
     public static void stopScreenShare() {
