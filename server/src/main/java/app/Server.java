@@ -47,9 +47,7 @@ public class Server {
 
         String command;
         do {
-            String userOS = Server.userOS.get(actualTarget);
-            String userName = Server.systemNames.get(actualTarget);
-            System.out.println(ConsoleColors.BLUE + "Target: " + userName + "@" + formatIPandPORT(actualTarget) + ConsoleColors.RESET+ " - " + userOS +"\n");
+            System.out.println(ConsoleColors.BLUE + userString(actualTarget) + ConsoleColors.RESET+"\n");
             command = sc.nextLine();
             if(!isNullOrEmpty(command)) {
                 switch(command) {
@@ -101,7 +99,7 @@ public class Server {
     private static void printTargets() {
         for(int i = 1; i <= targets.size(); i++) {
             ClientConnection target = targets.get(i);
-            System.out.println("(" + i + ") - " + formatIPandPORT(target));
+            System.out.println("(" + i + ") - " + userString(target));
         }
 
         System.out.println(ConsoleColors.GREEN + "-------------------------------------------------" + ConsoleColors.RESET);
@@ -122,5 +120,13 @@ public class Server {
 
     private static String formatIPandPORT(ClientConnection client) {
         return client.getConnection().getSocket().getInetAddress() + ":" + client.getConnection().getSocket().getPort();
+    }
+
+    private static String userString(ClientConnection c) {
+        String userOS = Server.userOS.get(c);
+        String userName = Server.systemNames.get(c);
+        String userIP = formatIPandPORT(c);
+
+        return userName + "@" + userIP + " [" + userOS + "]";
     }
 }
