@@ -1,17 +1,13 @@
 package utils;
 
-import java.awt.AWTException;
-import java.awt.MouseInfo;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
+import network.Connection;
+import network.Message;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import javax.imageio.ImageIO;
-
-import network.Connection;
-import network.Message;
 
 public class ScreenUtils {
 

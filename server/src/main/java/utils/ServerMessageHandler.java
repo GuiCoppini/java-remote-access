@@ -1,17 +1,16 @@
 package utils;
 
-import java.awt.Graphics2D;
+import app.Server;
+import network.ClientConnection;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 
-import app.Server;
-import network.ClientConnection;
-import network.Message;
-import org.jnativehook.keyboard.NativeKeyEvent;
 import static utils.ServerUtils.print;
 
 

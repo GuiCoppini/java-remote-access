@@ -1,10 +1,10 @@
 package utils;
 
-import java.io.IOException;
-import java.util.Scanner;
-
 import network.Connection;
 import network.Message;
+
+import java.io.IOException;
+import java.util.Scanner;
 
 public class ClientUtils {
     public static void startOnNewThread(Runnable r) {

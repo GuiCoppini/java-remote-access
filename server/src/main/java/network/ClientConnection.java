@@ -1,7 +1,6 @@
 package network;
 
 import app.Server;
-import exception.ClientOfflineException;
 import utils.ServerMessageHandler;
 
 public class ClientConnection implements Runnable {

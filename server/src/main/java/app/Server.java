@@ -1,5 +1,10 @@
 package app;
 
+import network.ClientConnection;
+import network.Connection;
+import network.Message;
+import utils.ConsoleColors;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,10 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import network.ClientConnection;
-import network.Connection;
-import network.Message;
-import utils.ConsoleColors;
 import static utils.ServerUtils.printCommandList;
 import static utils.ServerUtils.startOnNewThread;
 
