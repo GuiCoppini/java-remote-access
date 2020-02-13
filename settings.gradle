@@ -1,2 +1,2 @@
-include 'client', 'server'
+include 'client', 'server', 'commons'
 rootProject.name = 'java-remote-access'

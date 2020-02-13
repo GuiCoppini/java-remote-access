@@ -1,5 +1,8 @@
 package app;
 
+import static utils.ServerUtils.printCommandList;
+import static utils.ServerUtils.startOnNewThread;
+
 import network.ClientConnection;
 import network.Connection;
 import network.Message;
@@ -11,9 +14,6 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
-import static utils.ServerUtils.printCommandList;
-import static utils.ServerUtils.startOnNewThread;
 
 public class Server {
 
@@ -124,7 +124,7 @@ public class Server {
     }
 
     private static String formatIPandPORT(ClientConnection client) {
-        return client.getConnection().getSocket().getInetAddress() + ":" + client.getConnection().getSocket().getPort();
+        return client.getConnection().socket.getInetAddress() + ":" + client.getConnection().socket.getPort();
     }
 
     private static String userString(ClientConnection c) {

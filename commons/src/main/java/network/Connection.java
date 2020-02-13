@@ -8,7 +8,7 @@ import java.net.Socket;
 public class Connection {
     public ObjectOutputStream out;
     public ObjectInputStream in;
-    Socket socket;
+    public Socket socket;
 
     public Connection(Socket socket) {
         this.socket = socket;
@@ -22,15 +22,11 @@ public class Connection {
 
     public Message readMessage() throws IOException, ClassNotFoundException {
         Message input;
-//        try {
-            while(true) {
-                if((input = (Message) in.readObject()) != null) {
-                    return input;
-                }
+        while(true) {
+            if((input = (Message) in.readObject()) != null) {
+                return input;
             }
-//        } catch(Exception e) {
-//            throw new ClientOfflineException();
-//        }
+        }
     }
 
     public void sendMessage(Message message) {
@@ -40,9 +36,5 @@ public class Connection {
         } catch(IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public Socket getSocket() {
-        return socket;
     }
 }

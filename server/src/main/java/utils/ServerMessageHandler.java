@@ -1,7 +1,11 @@
 package utils;
 
+import static utils.ServerUtils.print;
+
 import app.Server;
 import network.ClientConnection;
+import network.Message;
+import org.jnativehook.keyboard.NativeKeyEvent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,8 +14,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-
-import static utils.ServerUtils.print;
 
 
 public class ServerMessageHandler {

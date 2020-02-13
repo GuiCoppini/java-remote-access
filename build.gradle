@@ -1,20 +1,22 @@
-allprojects {
+subprojects {
+    apply plugin: 'java'
+
     repositories {
         jcenter()
     }
 
-}
-
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'application'
     dependencies {
         compile group: 'com.1stleg', name: 'jnativehook', version: '2.1.0'
     }
 }
 
 project("server") {
+    apply plugin: 'application'
     mainClassName = 'app.Server'
+
+    dependencies {
+        compile project(':commons')
+    }
 
     jar {
         manifest {
@@ -27,7 +29,12 @@ project("server") {
 }
 
 project("client") {
+    apply plugin: 'application'
     mainClassName = 'app.Client'
+
+    dependencies {
+        compile project(':commons')
+    }
 
     jar {
         manifest {
@@ -38,3 +45,13 @@ project("client") {
         }
     }
 }
+
+
+//task setAntClassLoader {
+//    doLast {
+//        ClassLoader antClassLoader = org.apache.tools.ant.Project.class.classLoader
+//        configurations.compile.each { File f ->
+//            antClassLoader.addURL(f.toURI().toURL())
+//        }
+//    }
+//}
